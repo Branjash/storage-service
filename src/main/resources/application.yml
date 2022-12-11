@@ -1,0 +1,11 @@
+spring:
+
+  application:
+    name: storage-service
+
+  cloud:
+    config:
+      uri: http://service-configurations:8888
+
+  config:
+    import: optional:configserver:http://service-configurations:8888
