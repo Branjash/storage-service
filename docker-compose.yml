@@ -1,0 +1,39 @@
+version: '3.6'
+
+services:
+
+# Database storage
+  postgres-storage:
+    image: postgres:14
+    volumes:
+      - "postgres-storage-service-vol:/var/lib/postgresql/data"
+      - "./docker-compose/postgres:/docker-entrypoint-initdb.d/"
+
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    networks:
+      - resource-network
+
+
+# Resource service for file manipulation
+  storage-service:
+    image: storage-service-local-image
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "8999:8999"
+    depends_on:
+      - postgres-storage
+    networks:
+      - resource-network
+
+volumes:
+  postgres-storage-service-vol:
+    driver: local
+
+networks:
+  resource-network:
+    external: true
+    driver: bridge
